@@ -1,7 +1,4 @@
-# ============================================================
-# MÁQUINA VIRTUAL PARA EXECUTAR BYTECODE
-# ============================================================
-
+# Máquina virtual para executar bytecode
 class VirtualMachine:
 
     def __init__(self):
@@ -10,9 +7,7 @@ class VirtualMachine:
         self.labels = {}         # labels: { L1: posição }
         self.program_counter = 0 # instrução atual
 
-    # ----------------------------------------------------------
     # Primeira etapa: percorre o bytecode para encontrar os labels e suas posições
-    # ----------------------------------------------------------
     def _find_labels(self, bytecode):
 
         for position, instruction in enumerate(bytecode):
@@ -24,9 +19,7 @@ class VirtualMachine:
                 label_name = instruction[:-1]
                 self.labels[label_name] = position
 
-    # ----------------------------------------------------------
     # Executa as instruções do programa
-    # ----------------------------------------------------------
     def run(self, bytecode):
 
         # Procura os labels antes da execução
@@ -47,25 +40,23 @@ class VirtualMachine:
 
             opcode = parts[0]
 
-            # ==================================================
             # Finaliza o programa
-            # ==================================================
+            
             if opcode == 'HALT':
                 print("\nPrograma finalizado.")
                 break
 
-            # ==================================================
             # Cria a variável na memória
-            # ==================================================
+
             elif opcode == 'alloc':
 
                 variable_name = parts[1]
 
                 self.memory[variable_name] = 0
 
-            # ==================================================
+            
             # Adiciona um valor na pilha
-            # ==================================================
+            
             elif opcode == 'PUSH':
 
                 value = parts[1]
@@ -83,9 +74,7 @@ class VirtualMachine:
 
                 self.stack.append(value)
 
-            # ==================================================
             # Carrega o valor da variável para a pilha
-            # ==================================================
             elif opcode == 'LOAD':
 
                 variable_name = parts[1]
@@ -94,9 +83,7 @@ class VirtualMachine:
 
                 self.stack.append(value)
 
-            # ==================================================
             # Salva o valor da pilha na variável
-            # ==================================================
             elif opcode == 'STORE':
 
                 variable_name = parts[1]
@@ -105,9 +92,7 @@ class VirtualMachine:
 
                 self.memory[variable_name] = value
 
-            # ==================================================
             # Operações aritméticas
-            # ==================================================
             elif opcode == 'ADD':
 
                 right = self.stack.pop()
@@ -136,9 +121,7 @@ class VirtualMachine:
 
                 self.stack.append(left // right)
 
-            # ==================================================
             # Operações de comparação
-            # ==================================================
             elif opcode == 'CMP_EQ':
 
                 right = self.stack.pop()
@@ -167,9 +150,7 @@ class VirtualMachine:
 
                 self.stack.append(left > right)
 
-            # ==================================================
             # Salto incondicional
-            # ==================================================
             elif opcode == 'JMP':
 
                 label = parts[1]
@@ -178,9 +159,7 @@ class VirtualMachine:
 
                 continue
 
-            # ==================================================
             # Salta se a condição for verdadeira
-            # ==================================================
             elif opcode == 'JMP_IF_TRUE':
 
                 label = parts[1]
@@ -191,36 +170,27 @@ class VirtualMachine:
                     self.program_counter = self.labels[label]
                     continue
 
-            # ==================================================
             # Read: lê um valor do usuário e coloca na pilha
-            # ==================================================
             elif opcode == 'READ':
 
                 value = int(input("Entrada: "))
 
                 self.stack.append(value)
 
-            # ==================================================
             # Write: exibe um valor na saída
-            # ==================================================
             elif opcode == 'WRITE':
 
                 value = self.stack.pop()
 
                 print(f"OUTPUT: {value}")
 
-            # ==================================================
             # Instrução inválida
-            # ==================================================
             else:
                 raise Exception(f'Instrução inválida: {instruction}')
 
             self.program_counter += 1
 
-
-# ============================================================
 # Teste completo
-# ============================================================
 
 if __name__ == "__main__":
 
@@ -253,33 +223,25 @@ if __name__ == "__main__":
     write(x);
     """
 
-    # ========================================================
     # 1. LÉXICO
-    # ========================================================
 
     scanner = Scanner(source_code)
 
     tokens = scanner.tokenization()
 
-    # ========================================================
     # 2. SINTÁTICO
-    # ========================================================
 
     parser = Parser(tokens)
 
     ast = parser.analyse()
 
-    # ========================================================
     # 3. SEMÂNTICO
-    # ========================================================
 
     semantic = SemanticAnalyser()
 
     semantic.analyse(ast)
 
-    # ========================================================
     # 4. CÓDIGO DE TRÊS ENDEREÇOS (TAC)
-    # ========================================================
 
     intermediate_generator = IntermediateCodeGenerator()
 
@@ -293,9 +255,7 @@ if __name__ == "__main__":
     for instruction in tac:
         print(instruction)
 
-    # ========================================================
     # 5. GERAÇÃO DO BYTECODE
-    # ========================================================
 
     final_generator = FinalCodeGenerator()
 
@@ -307,9 +267,7 @@ if __name__ == "__main__":
     for instruction in bytecode:
         print(instruction)
 
-    # ========================================================
     # 6. MÁQUINA VIRTUAL
-    # ========================================================
 
     vm = VirtualMachine()
 
